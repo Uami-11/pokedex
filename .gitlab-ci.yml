@@ -4,12 +4,10 @@ stages:
 
 build:
   stage: build
-  image: golang:latest
   script:
     - go build ./...
 
 test:
   stage: test
-  image: golang:latest
   script:
     - go test ./...
