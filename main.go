@@ -11,6 +11,18 @@ import (
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 	fmt.Println("Welcome to the Pokedex!")
+	fmt.Print("         .-. \\_/ .-.\n" +
+		"         \\.-\\/=\\/.-/\n" +
+		"      '-./___|=|___\\.-'\n" +
+		"     .--| \\|/`\"\"`\\|/ |--.\n" +
+		"    (((_)\\  .---.  /(_)))\n" +
+		"     `\\ \\_`-.   .-'_/ /`_\n" +
+		"       '.__       __.'(_))\n" +
+		"           /     \\     //\n" +
+		"          |       |__.'/\n" +
+		"          \\       /--'`\n" +
+		"      .--,-' .--. '----.\n" +
+		"     '----`--'  '--`----'\n")
 	for {
 		fmt.Print("Pokédex > ")
 		scanned := scanner.Scan()
