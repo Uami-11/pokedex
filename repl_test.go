@@ -5,6 +5,7 @@ import (
 )
 
 func TestCleanInput(t *testing.T) {
+	t.Parallel()
 	cases := []struct {
 		input    string
 		expected []string

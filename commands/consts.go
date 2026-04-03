@@ -2,8 +2,11 @@ package commands
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
+
+	pokecache "github.com/Uami-11/pokedex/internal"
 )
 
 type cliCommand struct {
@@ -63,6 +66,22 @@ func init() {
 }
 
 func fetchLocations(url string) (LocationAreaResponse, error) {
+	if _, exists := pokecache.LocationCache.CacheEntries[url]; exists {
+
+		locations, cached := pokecache.LocationCache.Get(url)
+		if !cached {
+			return LocationAreaResponse{}, errors.New("could not cache from the cache")
+		}
+
+		var data LocationAreaResponse
+
+		if err := json.Unmarshal(locations, &data); err != nil {
+			return data, nil
+		} else {
+			return data, err
+		}
+
+	}
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return LocationAreaResponse{}, err
