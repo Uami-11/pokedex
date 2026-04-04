@@ -12,7 +12,7 @@ import (
 type cliCommand struct {
 	Name        string
 	Description string
-	Callback    func() error
+	Callback    func([]string) error
 }
 
 type config struct {
@@ -29,6 +29,16 @@ type LocationAreaResponse struct {
 	} `json:"results"`
 }
 
+type Pokemon struct {
+	Name string `json:"name"`
+}
+
+type LocationInfo struct {
+	PokemonEncounters []struct {
+		ThePokemon Pokemon `json:"pokemon"`
+	} `json:"pokemon_encounters"`
+}
+
 var (
 	TheCommands = map[string]cliCommand{}
 	TheConfig   config
@@ -39,27 +49,39 @@ func init() {
 		"exit": {
 			Name:        "exit",
 			Description: "Exit the Pokedex",
-			Callback:    Exit,
+			Callback: func(args []string) error {
+				return Exit()
+			},
 		},
 		"help": {
 			Name:        "help",
 			Description: "Displays a help message",
-			Callback: func() error {
+			Callback: func(args []string) error {
 				return Help(TheCommands)
 			},
 		},
 		"map": {
 			Name:        "map",
 			Description: "Shows the next 20 locations",
-			Callback: func() error {
+			Callback: func(args []string) error {
 				return Map(&TheConfig)
 			},
 		},
 		"mapb": {
 			Name:        "map back",
 			Description: "Shows the previous 20 locations",
-			Callback: func() error {
+			Callback: func(args []string) error {
 				return MapBack(&TheConfig)
+			},
+		},
+		"explore": {
+			Name:        "explore",
+			Description: "Shows all the pokemon encounters in a specific area",
+			Callback: func(args []string) error {
+				if len(args) < 1 {
+					return errors.New("usage: explore <location-name>")
+				}
+				return Explore(args[0])
 			},
 		},
 	}

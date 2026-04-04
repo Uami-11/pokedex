@@ -18,8 +18,7 @@ func main() {
 		"    (((_)\\  .---.  /(_)))\n" +
 		"     `\\ \\_`-.   .-'_/ /`_\n" +
 		"       '.__       __.'(_))\n" +
-		"           /     \\     //\n" +
-		"          |       |__.'/\n" +
+		"           /     \\     //\n" + "          |       |__.'/\n" +
 		"          \\       /--'`\n" +
 		"      .--,-' .--. '----.\n" +
 		"     '----`--'  '--`----'\n")
@@ -33,12 +32,13 @@ func main() {
 		userInput := scanner.Text()
 		userWords := cleanInput(userInput)
 		userCommand := userWords[0]
+		userArguments := userWords[1:]
 		var validCommand bool
 
 		for command := range commands.TheCommands {
 			if userCommand == command {
 				validCommand = true
-				err := commands.TheCommands[command].Callback()
+				err := commands.TheCommands[command].Callback(userArguments)
 				if err != nil {
 					fmt.Println("%w", err)
 				}
