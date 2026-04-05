@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 
 	pokecache "github.com/Uami-11/pokedex/internal"
@@ -30,7 +31,8 @@ type LocationAreaResponse struct {
 }
 
 type Pokemon struct {
-	Name string `json:"name"`
+	Name           string `json:"name"`
+	BaseExperience int    `json:"base_experience"`
 }
 
 type LocationInfo struct {
@@ -42,6 +44,7 @@ type LocationInfo struct {
 var (
 	TheCommands = map[string]cliCommand{}
 	TheConfig   config
+	Pokedex     = map[string]Pokemon{}
 )
 
 func init() {
@@ -84,6 +87,16 @@ func init() {
 				return Explore(args[0])
 			},
 		},
+		"catch": {
+			Name:        "catch",
+			Description: "Attempt to catch specified pokemon",
+			Callback: func(args []string) error {
+				if len(args) < 1 {
+					return errors.New("usage: catch <pokemon-name>")
+				}
+				return Catch(args[0])
+			},
+		},
 	}
 }
 
@@ -118,8 +131,12 @@ func fetchLocations(url string) (LocationAreaResponse, error) {
 	defer res.Body.Close()
 
 	var data LocationAreaResponse
-	decoder := json.NewDecoder(res.Body)
-	if err := decoder.Decode(&data); err != nil {
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		return data, err
+	}
+
+	if err = json.Unmarshal(body, &data); err != nil {
 		return data, err
 	}
 

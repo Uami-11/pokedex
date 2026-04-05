@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"math/rand"
 	"net/http"
 	"os"
 
@@ -61,6 +62,58 @@ func Explore(location string) error {
 
 	for _, enc := range data.PokemonEncounters {
 		fmt.Printf("- %s\n", enc.ThePokemon.Name)
+	}
+
+	return nil
+}
+
+func Catch(pokemon string) error {
+	pokemonUrl := "https://pokeapi.co/api/v2/pokemon/" + pokemon
+	fmt.Printf("Throwing a Pokeball at %s...\n", pokemon)
+
+	body, ok := pokecache.LocationCache.Get(pokemonUrl)
+	if !ok {
+		req, err := http.NewRequest("GET", pokemonUrl, nil)
+		if err != nil {
+			return err
+		}
+
+		client := http.Client{}
+		res, err := client.Do(req)
+		if err != nil {
+			return err
+		}
+
+		defer res.Body.Close()
+
+		if res.StatusCode != http.StatusOK {
+			return fmt.Errorf("pokemon not found")
+		}
+
+		body, err = io.ReadAll(res.Body)
+		if err != nil {
+			return err
+		}
+
+		pokecache.LocationCache.Add(pokemonUrl, body)
+	}
+
+	var data Pokemon
+
+	if err := json.Unmarshal(body, &data); err != nil {
+		return err
+	}
+
+	difficulty := data.BaseExperience / 2
+	difficulty = min(difficulty, 90)
+
+	roll := rand.Intn(100)
+
+	if roll > difficulty {
+		fmt.Printf("%s was caught!\n", pokemon)
+		Pokedex[pokemon] = data
+	} else {
+		fmt.Printf("%s escaped!\n", pokemon)
 	}
 
 	return nil
