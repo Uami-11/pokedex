@@ -32,7 +32,22 @@ type LocationAreaResponse struct {
 
 type Pokemon struct {
 	Name           string `json:"name"`
+	Height         int    `json:"height"`
+	Weigth         int    `json:"weight"`
 	BaseExperience int    `json:"base_experience"`
+
+	Stats []struct {
+		BaseStat int `json:"base_stat"`
+		Stat     struct {
+			Name string `json:"name"`
+		} `json:"stat"`
+	} `json:"stats"`
+
+	Types []struct {
+		Type struct {
+			Name string `json:"name"`
+		} `json:"type"`
+	} `json:"types"`
 }
 
 type LocationInfo struct {
@@ -95,6 +110,20 @@ func init() {
 					return errors.New("usage: catch <pokemon-name>")
 				}
 				return Catch(args[0])
+			},
+		},
+		"inspect": {
+			Name:        "inspect",
+			Description: "See the information of a specifc pokemon registered in your pokedex",
+			Callback: func(args []string) error {
+				if len(args) < 1 {
+					return errors.New("usage: inspect <pokemon-name>")
+				}
+				if _, exists := Pokedex[args[0]]; !exists {
+					return errors.New("you do not have this pokemon registered into your pokedex")
+				}
+
+				return Inspect(args[0])
 			},
 		},
 	}

@@ -118,3 +118,23 @@ func Catch(pokemon string) error {
 
 	return nil
 }
+
+func Inspect(pokemon string) error {
+	pokeInfo := Pokedex[pokemon]
+
+	fmt.Printf("Name: %s\n", pokeInfo.Name)
+	fmt.Printf("Height: %d\n", pokeInfo.Height)
+	fmt.Printf("Weight: %d\n", pokeInfo.Weigth)
+
+	fmt.Println("Stats:")
+	for _, stat := range pokeInfo.Stats {
+		fmt.Printf(" - %s: %d\n", stat.Stat.Name, stat.BaseStat)
+	}
+
+	fmt.Println("Type:")
+	for _, t := range pokeInfo.Types {
+		fmt.Printf(" - %s\n", t.Type.Name)
+	}
+
+	return nil
+}
