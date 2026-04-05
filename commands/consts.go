@@ -126,6 +126,13 @@ func init() {
 				return Inspect(args[0])
 			},
 		},
+		"pokedex": {
+			Name:        "pokedex",
+			Description: "List all the pokemon in your pokedex",
+			Callback: func(args []string) error {
+				return CheckPokedex()
+			},
+		},
 	}
 }
 

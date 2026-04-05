@@ -138,3 +138,19 @@ func Inspect(pokemon string) error {
 
 	return nil
 }
+
+func CheckPokedex() error {
+	if len(Pokedex) == 0 {
+		fmt.Println("You have not caught any pokemon!")
+		return nil
+	}
+
+	fmt.Printf("You have caught %d pokemon!\n", len(Pokedex))
+	fmt.Println("Pokemon:")
+
+	for pokemon := range Pokedex {
+		fmt.Printf(" - %s\n", pokemon)
+	}
+
+	return nil
+}
